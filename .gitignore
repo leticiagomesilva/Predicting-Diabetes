@@ -1,0 +1,48 @@
+# ============================
+# PASTAS DO DOCKER (NÃO SUBIR)
+# ============================
+
+# Postgres data directory
+postgres/data/
+
+# MinIO object storage data
+minio/data/
+
+# MLflow artifacts (somente os artefatos, não a pasta inteira)
+mlflow/artifacts/
+
+# ============================
+# NOTEBOOKS CACHE
+# ============================
+
+*/.ipynb_checkpoints/
+
+# ============================
+# ARQUIVOS PYTHON INTERNOS
+# ============================
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ============================
+# ARQUIVOS DE SISTEMA
+# ============================
+
+.DS_Store
+Thumbs.db
+
+# ============================
+# VENV (se alguém usar localmente)
+# ============================
+
+venv/
+env/
+.venv/
+
+# ============================
+# LOGS
+# ============================
+
+*.log
