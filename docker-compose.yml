@@ -13,6 +13,19 @@ services:
     volumes:
       - ./minio/data:/data
 
+  fastapi:
+    build: ./fastapi
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_ACCESS_KEY: "minioadmin"
+      MINIO_SECRET_KEY: "minioadmin"
+      MINIO_BUCKET: "diabetes-raw"
+    depends_on:
+      - minio
+
   postgres:
     image: postgres:15
     container_name: postgres

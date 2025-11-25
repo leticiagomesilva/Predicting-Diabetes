@@ -1,24 +1,31 @@
 # Predicting-Diabetes
-Comparative Effectiveness of Classification Algorithms in Predicting Diabetes 
+Reprodução e avaliação do artigo  
+**“Comparative Effectiveness of Classification Algorithms in Predicting Diabetes”**  
+(IEEE, 2024)
+
+Projeto da disciplina **Aprendizado de Máquina – CESAR School (2025.2)**.  
+Este repositório contém o pipeline exigido pelo professor, incluindo ingestão, armazenamento, modelagem, rastreamento e visualização.
 
 ---
 
-# Predicting Diabetes — Projeto AM (Commit Inicial)
-
-Este repositório contém a **estrutura inicial** e o **ambiente Docker básico** para o projeto da disciplina de Aprendizagem de Máquina (AM).  
-Neste primeiro commit, foi implementada apenas a **infraestrutura**, conforme orientações do professor.
-
----
-
-## ✔ Estrutura inicial do projeto
+# 1. Estrutura Geral do Projeto
 
 ```
 Predicting-Diabetes/
 ├── docker-compose.yml
+├── fastapi/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── config.py
+│   │   ├── routes/upload.py
+│   │   └── services/minio_service.py
+│   ├── Dockerfile
+│   └── requirements.txt
+│
 ├── minio/
-│ └── data/
+│   └── data/
 ├── postgres/
-│ └── data/
+│   └── data/
 ├── mlflow/
 ├── jupyterlab/
 ├── notebooks/
@@ -26,78 +33,102 @@ Predicting-Diabetes/
 └── reports/
 ```
 
-Todas as pastas estão vazias (exceto pelas áreas de dados após o Docker iniciar), pois este commit representa somente a base do ambiente.
 
 ---
 
-## ✔ Serviços já disponíveis via Docker
+# 2. Componentes já funcionais neste commit
 
-O arquivo `docker-compose.yml` desta etapa inicial sobe os seguintes serviços:
+## ✔ FastAPI – Camada de Ingestão (sua parte)
+Responsável por receber arquivos `.csv` ou `.json` e enviá-los diretamente ao bucket MinIO `diabetes-raw`.
 
-- **MinIO** — Armazenamento de objetos (S3-like)
-- **PostgreSQL** — Banco de dados relacional
-- **MLflow** — Servidor para rastreamento de experimentos (será configurado posteriormente)
-- **JupyterLab** — Ambiente para notebooks e desenvolvimento
+Endpoints disponíveis:
+- **GET /** → Healthcheck  
+- **POST /api/upload** → Upload e envio ao MinIO
 
-Nenhum código de modelagem, ingestão ou API foi adicionado ainda.
+Tecnologias usadas:
+- FastAPI  
+- MinIO SDK v7  
+- Pydantic Settings  
+- Uvicorn  
+
+## ✔ MinIO
+Serviço de armazenamento S3-like.  
+A FastAPI cria automaticamente o bucket `diabetes-raw` caso ele ainda não exista.
+
+## ✔ Ambiente Docker
+Todos os serviços principais sobem via `docker-compose`:
+- FastAPI
+- MinIO
+- PostgreSQL
+- JupyterLab
+- MLflow
+- Trendz (estrutura inicial)
 
 ---
 
-## ▶ Como executar o ambiente
+# 3. Como executar o projeto
 
-Antes de rodar pela primeira vez, garanta que os diretórios de dados estão vazios:
+### ▶ Passo 1 — Subir toda a stack
+```bash
+docker compose up -d
 ```
-rm -rf minio/data
-rm -rf postgres/data
+
+### ▶ Passo 2 — Verificar serviços
+
+| Serviço      | URL                        | Credenciais |
+|--------------|----------------------------|-------------|
+| FastAPI      | http://localhost:8000       | — |
+| Swagger UI   | http://localhost:8000/docs  | — |
+| MinIO        | http://localhost:9001       | minioadmin / minioadmin |
+| JupyterLab   | http://localhost:8888       | Token nos logs |
+| MLflow       | http://localhost:5500       | — |
+| PostgreSQL   | localhost:5432              | admin / admin |
+
+---
+
+# 4. Como testar a ingestão (FastAPI)
+
+### ▶ Via CURL
+```bash
+curl -X POST "http://localhost:8000/api/upload"      -F "file=@Dataset_of_Diabetes.csv"
 ```
 
-Em seguida, execute:
+### ▶ Via Navegador (Swagger)
+1. Abrir: http://localhost:8000/docs  
+2. Abrir o endpoint POST `/api/upload`  
+3. Clicar em “Try it out”  
+4. Selecionar o arquivo `.csv` ou `.json`  
+5. Executar  
+
+### ▶ Resultado esperado
+```json
+{
+  "message": "File uploaded successfully",
+  "object_name": "20251125-213950_Dataset_of_Diabetes.csv"
+}
 ```
-docker compose up
+
+O arquivo aparecerá no MinIO em:
+```
+http://localhost:9001/browser/diabetes-raw
 ```
 
 ---
 
-## 🌐 Endpoints dos serviços
+# 5. Próximas etapas do projeto
 
-Após iniciar:
-
-### • JupyterLab  
-http://localhost:8888  
-(O token aparece nos logs)
-
-### • MinIO  
-http://localhost:9001  
-Usuário: `minioadmin`  
-Senha: `minioadmin`
-
-### • PostgreSQL  
-Host: `localhost`  
-Porta: `5432`  
-Usuário: `admin`  
-Senha: `admin`  
-Banco: `diabetesdb`
-
-### • MLflow  
-http://localhost:5500  
-(Ainda sem experimentos — será configurado em commits posteriores)
+1. Pipeline Snowflake/Postgres → ingestão do dataset bruto  
+2. Notebook de pré-processamento e limpeza  
+3. Notebook de modelagem e comparação de algoritmos  
+4. Registro de experimentos no MLflow  
+5. Exportação do modelo final para o S3  
+6. Criação de dashboards no ThingsBoard/Trendz  
+7. Relatório final em `.docx`  
 
 ---
 
-## 📌 Próximas etapas (próximos commits)
-
-1. Criar o serviço FastAPI para ingestão de dados  
-2. Implementar notebook de pré-processamento  
-3. Implementar notebook de modelagem e comparação dos algoritmos  
-4. Registrar experimentos com MLflow  
-5. Criar dashboard de visualização com Trendz/ThingsBoard  
-6. Elaborar relatório final
-
----
-
-## 📄 Status Atual
-
-**Commit inicial concluído:**  
-✔ Estrutura criada  
-✔ Docker funcionando  
-✔ Ambiente pronto para desenvolvimento nas próximas etapas
+# 6. Status Atual
+- Estrutura do projeto criada  
+- Docker funcionando  
+- FastAPI 100% funcional e integrada ao MinIO
+- Pipeline pronto para outras camadas da equipe  
