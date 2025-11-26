@@ -1,6 +1,6 @@
 fastapi
 uvicorn
 python-multipart
-minio==7.2.5
+boto3
 pydantic
 pydantic-settings

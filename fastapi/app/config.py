@@ -1,11 +1,13 @@
-import os
 from pydantic_settings import BaseSettings
 
-
 class Settings(BaseSettings):
-    MINIO_ENDPOINT: str = os.getenv("MINIO_ENDPOINT", "minio:9000")
-    MINIO_ACCESS_KEY: str = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
-    MINIO_SECRET_KEY: str = os.getenv("MINIO_SECRET_KEY", "minioadmin")
-    MINIO_BUCKET: str = os.getenv("MINIO_BUCKET", "diabetes-raw")
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_DEFAULT_REGION: str = "us-east-2"
+    S3_BUCKET_NAME: str
+
+    model_config = {
+        "env_file": ".env"
+    }
 
 settings = Settings()

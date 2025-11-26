@@ -41,6 +41,10 @@ venv/
 env/
 .venv/
 
+# Environment files
+.env
+fastapi/.env
+
 # ============================
 # LOGS
 # ============================
