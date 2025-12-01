@@ -4,7 +4,6 @@ Reprodução e avaliação do artigo
 (IEEE, 2024)
 
 Projeto da disciplina **Aprendizado de Máquina – CESAR School (2025.2)**.  
-Este repositório contém o pipeline exigido pelo professor, incluindo ingestão, armazenamento, modelagem, rastreamento e visualização.
 
 ---
 
