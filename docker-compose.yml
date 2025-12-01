@@ -53,9 +53,17 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - ./jupyter-lab/notebooks:/home/jovyan/work
+      - ./jupyter-lab:/home/jovyan/work
+
     environment:
       JUPYTER_ENABLE_LAB: "yes"
+      SNOWFLAKE_USER: "${SNOWFLAKE_USER}"
+      SNOWFLAKE_PASSWORD: "${SNOWFLAKE_PASSWORD}"
+      SNOWFLAKE_ACCOUNT: "${SNOWFLAKE_ACCOUNT}"
+      SNOWFLAKE_WAREHOUSE: "${SNOWFLAKE_WAREHOUSE}"
+      SNOWFLAKE_DATABASE: "${SNOWFLAKE_DATABASE}"
+      SNOWFLAKE_SCHEMA: "${SNOWFLAKE_SCHEMA}"
+      SNOWFLAKE_TABLE: "${SNOWFLAKE_TABLE}"
     # depends_on:
     #   - postgres
     #   - mlflow
