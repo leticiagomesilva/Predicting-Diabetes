@@ -132,3 +132,12 @@ http://localhost:9001/browser/diabetes-raw
 - Docker funcionando  
 - FastAPI 100% funcional e integrada ao MinIO
 - Pipeline pronto para outras camadas da equipe  
+
+--- 
+
+Grupo:
+- @leticiagomesilva
+- @belli5
+- @GabrielBza
+- @eduardoalins
+- @viniciuspetribu
