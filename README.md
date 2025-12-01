@@ -108,7 +108,7 @@ docker compose up -d
 
 ### Via CURL
 ```bash
-curl -X POST "http://localhost:8000/api/upload"  \  -F "file=data/raw/Dataset_of_Diabetes.csv"
+curl -X POST "http://localhost:8000/api/upload"  \  -F "file=\data\raw\Dataset_of_Diabetes.csv" 
 ```
 
 ### Via Navegador (Swagger)
