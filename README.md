@@ -62,6 +62,28 @@ Todos os serviços principais sobem via `docker-compose`:
 
 ---
 
+# Configuração do Ambiente 
+Criar um arquivo .env na raiz.
+
+```
+#AWS
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=
+S3_BUCKET_NAME=
+
+#Snowflake
+SNOWFLAKE_USER=
+SNOWFLAKE_PASSWORD=
+SNOWFLAKE_ACCOUNT=
+SNOWFLAKE_WAREHOUSE=
+SNOWFLAKE_DATABASE=
+SNOWFLAKE_SCHEMA=
+SNOWFLAKE_TABLE=
+```
+
+---
+
 # Como executar o projeto
 
 ### Passo 1 — Subir toda a stack
@@ -86,7 +108,7 @@ docker compose up -d
 
 ### Via CURL
 ```bash
-curl -X POST "http://localhost:8000/api/upload"      -F "file=@Dataset_of_Diabetes.csv"
+curl -X POST "http://localhost:8000/api/upload"  \  -F "file=data/raw/Dataset_of_Diabetes.csv"
 ```
 
 ### Via Navegador (Swagger)
