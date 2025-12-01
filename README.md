@@ -36,7 +36,7 @@ Predicting-Diabetes/
 
 # 2. Componentes já funcionais neste commit
 
-## ✔ FastAPI – Camada de Ingestão (sua parte)
+## FastAPI – Camada de Ingestão (sua parte)
 Responsável por receber arquivos `.csv` ou `.json` e enviá-los diretamente ao bucket MinIO `diabetes-raw`.
 
 Endpoints disponíveis:
@@ -49,11 +49,11 @@ Tecnologias usadas:
 - Pydantic Settings  
 - Uvicorn  
 
-## ✔ MinIO
+## MinIO
 Serviço de armazenamento S3-like.  
 A FastAPI cria automaticamente o bucket `diabetes-raw` caso ele ainda não exista.
 
-## ✔ Ambiente Docker
+## Ambiente Docker
 Todos os serviços principais sobem via `docker-compose`:
 - FastAPI
 - MinIO
@@ -71,7 +71,7 @@ Todos os serviços principais sobem via `docker-compose`:
 docker compose up -d
 ```
 
-### ▶ Passo 2 — Verificar serviços
+### Passo 2 — Verificar serviços
 
 | Serviço      | URL                        | Credenciais |
 |--------------|----------------------------|-------------|
