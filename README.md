@@ -97,8 +97,8 @@ docker compose up -d
 |--------------|----------------------------|-------------|
 | FastAPI      | http://localhost:8000       | — |
 | Swagger UI   | http://localhost:8000/docs  | — |
-| S3 Amazon    | http://localhost:9001       | ?? |
-| JupyterLab   | http://localhost:8888       | Token nos logs |
+| S3 Amazon    | http://localhost:9001       | - |
+| JupyterLab   | http://localhost:8888       | - |
 | MLflow       | http://localhost:5500       | — |
 | PostgreSQL   | localhost:5432              | admin / admin |
 
@@ -130,19 +130,6 @@ O arquivo aparecerá no S3 em:
 ```
 http://localhost:9001/browser/diabetes-raw
 ```
-
----
-
-# 5. Próximas etapas do projeto
-
-1. Pipeline Snowflake/Postgres → ingestão do dataset bruto  
-2. Notebook de pré-processamento e limpeza  
-3. Notebook de modelagem e comparação de algoritmos  
-4. Registro de experimentos no MLflow  
-5. Exportação do modelo final para o S3  
-6. Criação de dashboards no ThingsBoard/Trendz  
-7. Relatório final em `.docx`  
-
 --- 
 
 Grupo:
