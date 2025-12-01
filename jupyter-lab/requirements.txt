@@ -1,4 +1,9 @@
 pandas
 boto3
-python-dotenv
 snowflake-connector-python[pandas]
+numpy
+matplotlib
+seaborn
+scikit-learn
+mlflow
+requests
