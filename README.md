@@ -33,7 +33,6 @@ Predicting-Diabetes/
 └── reports/
 ```
 
-
 ---
 
 # 2. Componentes já funcionais neste commit
@@ -66,9 +65,9 @@ Todos os serviços principais sobem via `docker-compose`:
 
 ---
 
-# 3. Como executar o projeto
+# Como executar o projeto
 
-### ▶ Passo 1 — Subir toda a stack
+### Passo 1 — Subir toda a stack
 ```bash
 docker compose up -d
 ```
@@ -88,19 +87,19 @@ docker compose up -d
 
 # 4. Como testar a ingestão (FastAPI)
 
-### ▶ Via CURL
+### Via CURL
 ```bash
 curl -X POST "http://localhost:8000/api/upload"      -F "file=@Dataset_of_Diabetes.csv"
 ```
 
-### ▶ Via Navegador (Swagger)
+### Via Navegador (Swagger)
 1. Abrir: http://localhost:8000/docs  
 2. Abrir o endpoint POST `/api/upload`  
 3. Clicar em “Try it out”  
 4. Selecionar o arquivo `.csv` ou `.json`  
 5. Executar  
 
-### ▶ Resultado esperado
+### Resultado esperado
 ```json
 {
   "message": "File uploaded successfully",
@@ -125,19 +124,11 @@ http://localhost:9001/browser/diabetes-raw
 6. Criação de dashboards no ThingsBoard/Trendz  
 7. Relatório final em `.docx`  
 
----
-
-# 6. Status Atual
-- Estrutura do projeto criada  
-- Docker funcionando  
-- FastAPI 100% funcional e integrada ao MinIO
-- Pipeline pronto para outras camadas da equipe  
-
 --- 
 
 Grupo:
-- @leticiagomesilva
-- @belli5
-- @GabrielBza
-- @eduardoalins
-- @viniciuspetribu
+- Letícia Gomes da Silva
+- Gabriel Belliato
+- Gabriel Bezerra 
+- Eduardo Lins
+- Vinicius Petribu 
