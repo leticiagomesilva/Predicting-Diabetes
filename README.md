@@ -75,7 +75,7 @@ docker compose up -d
 |--------------|----------------------------|-------------|
 | FastAPI      | http://localhost:8000       | — |
 | Swagger UI   | http://localhost:8000/docs  | — |
-| MinIO        | http://localhost:9001       | minioadmin / minioadmin |
+| S3 Amazon    | http://localhost:9001       | ?? |
 | JupyterLab   | http://localhost:8888       | Token nos logs |
 | MLflow       | http://localhost:5500       | — |
 | PostgreSQL   | localhost:5432              | admin / admin |
@@ -104,7 +104,7 @@ curl -X POST "http://localhost:8000/api/upload"      -F "file=@Dataset_of_Diabet
 }
 ```
 
-O arquivo aparecerá no MinIO em:
+O arquivo aparecerá no S3 em:
 ```
 http://localhost:9001/browser/diabetes-raw
 ```
