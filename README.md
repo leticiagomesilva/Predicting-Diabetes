@@ -34,33 +34,31 @@ Predicting-Diabetes/
 
 ---
 
-# 2. Componentes já funcionais neste commit
-
-## FastAPI – Camada de Ingestão (sua parte)
-Responsável por receber arquivos `.csv` ou `.json` e enviá-los diretamente ao bucket MinIO `diabetes-raw`.
+## FastAPI – Camada de Ingestão 
+Responsável por receber arquivos `.csv` ou `.json` e enviá-los diretamente ao bucket S3 da Amazon `diabetes-raw`.
 
 Endpoints disponíveis:
 - **GET /** → Healthcheck  
-- **POST /api/upload** → Upload e envio ao MinIO
+- **POST /api/upload** → Upload e envio ao bucket S3
 
 Tecnologias usadas:
 - FastAPI  
-- MinIO SDK v7  
+- Bucket S3 Amazon  
 - Pydantic Settings  
 - Uvicorn  
 
-## MinIO
-Serviço de armazenamento S3-like.  
+## Bucket S3 Amazon
+Serviço de armazenamento.  
 A FastAPI cria automaticamente o bucket `diabetes-raw` caso ele ainda não exista.
 
 ## Ambiente Docker
 Todos os serviços principais sobem via `docker-compose`:
 - FastAPI
-- MinIO
+- S3 Amazon
 - PostgreSQL
 - JupyterLab
 - MLflow
-- Trendz (estrutura inicial)
+- Trendz 
 
 ---
 
