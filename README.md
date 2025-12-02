@@ -133,8 +133,8 @@ http://localhost:9001/browser/diabetes-raw
 --- 
 
 Grupo:
-- Letícia Gomes da Silva
-- Gabriel Belliato
-- Gabriel Bezerra 
 - Eduardo Lins
+- Gabriel Belliato
+- Gabriel Bezerra
+- Letícia Gomes da Silva
 - Vinicius Petribu 
