@@ -71,6 +71,20 @@ services:
     #   - postgres
     #   - mlflow
 
+  thingsboard:
+    image: thingsboard/tb-postgres
+    container_name: thingsboard
+    restart: always
+    ports:
+      - "9090:9090"   # host:container
+    environment:
+      TB_QUEUE_TYPE: in-memory
+    volumes:
+      - ./thingsboard/data:/data
+      - ./thingsboard/logs:/var/log/thingsboard
+
+
+
 networks:
   default:
     name: diabetes_net
