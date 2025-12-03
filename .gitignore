@@ -23,3 +23,6 @@ fastapi/.env
 
 thingsboard/data/
 thingsboard/logs/
+
+tb-data/
+tb-logs/

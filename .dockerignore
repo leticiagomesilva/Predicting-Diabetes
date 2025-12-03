@@ -1,50 +1,22 @@
-# ============================
-# IGNORAR DADOS DE DOCKER
-# ============================
-
 postgres/data/
 minio/data/
 mlflow/artifacts/
 
-# ============================
-# IGNORAR NOTEBOOKS TEMPORÁRIOS
-# ============================
-
 */.ipynb_checkpoints/
-
-# ============================
-# IGNORAR ARQUIVOS PYTHON
-# ============================
 
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# ============================
-# IGNORAR AMBIENTES LOCAIS
-# ============================
-
 venv/
 env/
 .venv/
 
-# ============================
-# IGNORAR ARQUIVOS DE SISTEMA
-# ============================
-
 .DS_Store
 Thumbs.db
 
-# ============================
-# IGNORAR LOGS
-# ============================
-
 *.log
-
-# ============================
-# IGNORAR CONFIGS DE EDITORES
-# ============================
 
 .vscode/
 .idea/
