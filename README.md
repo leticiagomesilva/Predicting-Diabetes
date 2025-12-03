@@ -46,13 +46,9 @@ Endpoints:
 |--------|------------------|-----------|
 | GET    | `/`              | Healthcheck |
 | POST   | `/api/upload`    | Upload e envio para S3 |
+| POST | `/send-to-thingsboard` | Envia o dataset para um device no ThingsBoard |
 
-Tecnologias:
-- FastAPI  
-- Amazon S3  
-- Boto3  
-- Pydantic Settings  
-- Uvicorn  
+Tecnologias: FastAPI, S3, Boto3, Uvicorn, Pandas. 
 
 ---
 
@@ -74,11 +70,11 @@ Todos os serviços sobem via `docker-compose`:
 
 | Serviço | Descrição |
 |---------|-----------|
-| FastAPI | Ingestão + Upload para S3 |
+| FastAPI | Ingestão + envio para S3 + envio para ThingsBoard |
 | PostgreSQL | Banco para MLflow |
 | JupyterLab | Execução dos notebooks |
 | MLflow | Tracking de modelos e experimentos |
-| Trendz | Visualização/monitoramento |
+| ThingsBoard | Dashboard IoT |
 | S3 Amazon | Armazenamento de arquivos |
 
 ---
@@ -100,6 +96,8 @@ SNOWFLAKE_WAREHOUSE=
 SNOWFLAKE_DATABASE=
 SNOWFLAKE_SCHEMA=
 SNOWFLAKE_TABLE=
+
+TB_TOKEN=
 ```
 
 ---
@@ -108,7 +106,7 @@ SNOWFLAKE_TABLE=
 
 ### 1 — Subir toda a stack
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 ### 2 — Acessar serviços
@@ -119,13 +117,16 @@ docker compose up -d
 | Swagger    | http://localhost:8000/docs |
 | JupyterLab | http://localhost:8888           |
 | MLflow     | http://localhost:5500           |
-| PostgreSQL | localhost:5432                                           |
+| ThingsBoard | http://localhost:9090 |
+
+```
+user: tenant@thingsboard.org
+pass: tenant
+```
 
 ---
 
 # 7. Testar Ingestão via FastAPI
-
-### Via CURL
 
 ```bash
 curl -X POST "http://localhost:8000/api/upload"      -F "file=@Dataset_of_Diabetes.csv"
@@ -155,7 +156,72 @@ s3://diabetes-raw/
 
 ---
 
-# 8. Logging de Modelos no MLflow
+# 8. Criar Device no ThingsBoard + Enviar Dados (Ingestão IoT)
+
+## 8.1 Criar o Device
+
+1. Acesse: http://localhost:9090  
+2. Menu lateral → **Devices**  
+3. **Add new device**  
+4. Nome: `diabetes-device`  
+5. Criar.
+
+---
+
+## 8.2 Pegar o TOKEN do Device
+
+1. Abra o device criado  
+2. Aba **Device Credentials**  
+3. Tipo: **Access Token**  
+4. Copie o token (ex: `rR9MfH2gFxP2nNhjC9Jp`)  
+
+Esse token vai no header da requisição.
+
+---
+
+# 9. Enviar o Dataset para o ThingsBoard
+
+A FastAPI já possui o endpoint:
+
+```
+POST http://localhost:8000/send-to-thingsboard
+```
+
+Ele envia **todas as linhas** do `Dataset_of_Diabetes.csv` para o ThingsBoard.
+
+### Estrutura no `main.py`:
+
+* CSV dentro do container: `/app/Dataset_of_Diabetes.csv`
+* Cada linha é enviada como JSON:
+
+```json
+{
+  "Pregnancies": 6,
+  "Glucose": 148,
+  "BloodPressure": 72,
+  "SkinThickness": 35,
+  "Insulin": 0,
+  "BMI": 33.6,
+  "Age": 50,
+  "Outcome": 1
+}
+```
+
+### Testar via CURL:
+
+```bash
+curl -X POST http://localhost:8000/send-to-thingsboard
+```
+
+### Resposta esperada:
+
+```json
+{"status":"ok","rows_sent":1000}
+```
+
+---
+
+# 10. Logging de Modelos no MLflow
 
 O projeto registra automaticamente:
 
@@ -174,7 +240,7 @@ mlflow.set_experiment("predicting-diabetes")
 
 ---
 
-# 9. Como resetar o MLflow e o PostgreSQL
+# 11. Como resetar o MLflow e o PostgreSQL
 
 Caso o MLflow falhe por causa de runs antigos, corrupção de volume ou banco ausente:
 
@@ -205,7 +271,7 @@ docker restart mlflow
 
 ---
 
-# 10. Grupo
+# 12. Grupo
 
 * Eduardo Lins  
 * Gabriel Belliato  

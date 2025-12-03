@@ -4,3 +4,5 @@ python-multipart
 boto3
 pydantic
 pydantic-settings
+requests
+pandas
