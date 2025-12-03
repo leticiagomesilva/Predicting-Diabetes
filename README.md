@@ -161,21 +161,12 @@ s3://diabetes-raw/
 ## 8.1 Criar o Device
 
 1. Acesse: http://localhost:9090  
-2. Menu lateral → **Devices**  
-3. **Add new device**  
+2. Menu lateral → **Entidades**  → **Dispositivos** 
+3. **Adicionar novo dispositivo (+)**  
 4. Nome: `diabetes-device`  
-5. Criar.
-
----
-
-## 8.2 Pegar o TOKEN do Device
-
-1. Abra o device criado  
-2. Aba **Device Credentials**  
-3. Tipo: **Access Token**  
-4. Copie o token (ex: `rR9MfH2gFxP2nNhjC9Jp`)  
-
-Esse token vai no header da requisição.
+5. **Next: Credenciais**
+6. Copiar Token de acesso (ex: `rR9MfH2gFxP2nNhjC9Jp`) 
+7. Colar Token no .env (`TB_TOKEN=`)
 
 ---
 
