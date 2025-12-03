@@ -9,6 +9,9 @@ services:
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
       S3_BUCKET_NAME: "${S3_BUCKET_NAME}"
+      TB_TOKEN: "${TB_TOKEN}"
+    networks:
+      - diabetes_net
 
   postgres:
     image: postgres:15
@@ -22,6 +25,8 @@ services:
       POSTGRES_DB: diabetesdb
     volumes:
       - ./postgres/data:/var/lib/postgresql/data
+    networks:
+      - diabetes_net
 
   mlflow:
     build:
@@ -42,7 +47,8 @@ services:
       --default-artifact-root s3://diabetes-ml2025/mlflow
       --host 0.0.0.0
       --port 5000
-      --allowed-hosts "*"
+    networks:
+      - diabetes_net
 
   jupyterlab:
     build:
@@ -53,7 +59,6 @@ services:
       - "8888:8888"
     volumes:
       - ./jupyter-lab:/home/jovyan/work
-
     environment:
       JUPYTER_ENABLE_LAB: "yes"
       SNOWFLAKE_USER: "${SNOWFLAKE_USER}"
@@ -63,28 +68,29 @@ services:
       SNOWFLAKE_DATABASE: "${SNOWFLAKE_DATABASE}"
       SNOWFLAKE_SCHEMA: "${SNOWFLAKE_SCHEMA}"
       SNOWFLAKE_TABLE: "${SNOWFLAKE_TABLE}"
-
       AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
-    # depends_on:
-    #   - postgres
-    #   - mlflow
+    networks:
+      - diabetes_net
 
   thingsboard:
     image: thingsboard/tb-postgres
     container_name: thingsboard
     restart: always
     ports:
-      - "9090:9090"   # host:container
+      - "9090:9090"
     environment:
       TB_QUEUE_TYPE: in-memory
     volumes:
-      - ./thingsboard/data:/data
-      - ./thingsboard/logs:/var/log/thingsboard
-
-
+      - tb-data:/data
+      - tb-logs:/var/log/thingsboard
+    networks:
+      - diabetes_net
 
 networks:
-  default:
-    name: diabetes_net
+  diabetes_net:
+
+volumes:
+  tb-data:
+  tb-logs:
