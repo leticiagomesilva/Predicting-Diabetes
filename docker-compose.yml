@@ -10,40 +10,39 @@ services:
       AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
       S3_BUCKET_NAME: "${S3_BUCKET_NAME}"
 
-  # postgres:
-  #   image: postgres:15
-  #   container_name: postgres
-  #   restart: always
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_USER: admin
-  #     POSTGRES_PASSWORD: admin
-  #     POSTGRES_DB: diabetesdb
-  #   volumes:
-  #     - ./postgres/data:/var/lib/postgresql/data
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: diabetesdb
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
 
-  # mlflow:
-  #   build:
-  #     context: ./mlflow
-  #     dockerfile: Dockerfile
-  #   container_name: mlflow
-  #   ports:
-  #     - "5500:5000"
-  #   environment:
-  #     MLFLOW_BACKEND_STORE_URI: "postgresql://admin:admin@postgres:5432/diabetesdb"
-  #     MLFLOW_ARTIFACT_URI: "s3://mlflow-artifacts"   # bucket do seu amigo
-  #     AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-  #     AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
-  #     AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
-  #   depends_on:
-  #     - postgres
-  #   command: >
-  #     mlflow server
-  #     --backend-store-uri postgresql://admin:admin@postgres:5432/diabetesdb
-  #     --artifacts-destination s3://mlflow-artifacts
-  #     --host 0.0.0.0
-  #     --port 5000
+  mlflow:
+    build:
+      context: ./mlflow
+      dockerfile: Dockerfile
+    container_name: mlflow
+    ports:
+      - "5500:5000"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+    depends_on:
+      - postgres
+    command: >
+      mlflow server
+      --backend-store-uri postgresql://admin:admin@postgres:5432/mlflowdb
+      --default-artifact-root s3://diabetes-ml2025/mlflow
+      --host 0.0.0.0
+      --port 5000
+      --allowed-hosts "*"
 
   jupyterlab:
     build:
@@ -64,6 +63,10 @@ services:
       SNOWFLAKE_DATABASE: "${SNOWFLAKE_DATABASE}"
       SNOWFLAKE_SCHEMA: "${SNOWFLAKE_SCHEMA}"
       SNOWFLAKE_TABLE: "${SNOWFLAKE_TABLE}"
+
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
     # depends_on:
     #   - postgres
     #   - mlflow
