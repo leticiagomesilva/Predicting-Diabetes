@@ -3,7 +3,7 @@ Reprodução e avaliação do artigo
 **“Comparative Effectiveness of Classification Algorithms in Predicting Diabetes”**  
 (IEEE, 2024)
 
-Projeto da disciplina **Aprendizado de Máquina – CESAR School (2025.2)**.  
+Projeto da disciplina **Aprendizado de Máquina – CESAR School (2025.2)**.
 
 ---
 
@@ -17,16 +17,18 @@ Predicting-Diabetes/
 │   │   ├── main.py
 │   │   ├── config.py
 │   │   ├── routes/upload.py
-│   │   └── services/minio_service.py
+│   │   └── services/s3_service.py
 │   ├── Dockerfile
 │   └── requirements.txt
 │
-├── minio/
-│   └── data/
 ├── postgres/
 │   └── data/
 ├── mlflow/
-├── jupyterlab/
+│   ├── Dockerfile
+│   └── ...
+├── jupyter-lab/
+│   ├── Dockerfile
+│   └── ...
 ├── notebooks/
 ├── trendz/
 └── reports/
@@ -34,45 +36,63 @@ Predicting-Diabetes/
 
 ---
 
-## FastAPI – Camada de Ingestão 
-Responsável por receber arquivos `.csv` ou `.json` e enviá-los diretamente ao bucket S3 da Amazon `diabetes-raw`.
+# 2. FastAPI – Camada de Ingestão
 
-Endpoints disponíveis:
-- **GET /** → Healthcheck  
-- **POST /api/upload** → Upload e envio ao bucket S3
+Responsável por receber arquivos `.csv` ou `.json` e enviá-los para o bucket S3 definido na variável `S3_BUCKET_NAME`.
 
-Tecnologias usadas:
+Endpoints:
+
+| Método | Rota             | Descrição |
+|--------|------------------|-----------|
+| GET    | `/`              | Healthcheck |
+| POST   | `/api/upload`    | Upload e envio para S3 |
+
+Tecnologias:
 - FastAPI  
-- Bucket S3 Amazon  
+- Amazon S3  
+- Boto3  
 - Pydantic Settings  
 - Uvicorn  
 
-## Bucket S3 Amazon
-Serviço de armazenamento.  
-A FastAPI cria automaticamente o bucket `diabetes-raw` caso ele ainda não exista.
+---
 
-## Ambiente Docker
-Todos os serviços principais sobem via `docker-compose`:
-- FastAPI
-- S3 Amazon
-- PostgreSQL
-- JupyterLab
-- MLflow
-- Trendz 
+# 3. Bucket S3 Amazon
+
+- Utilizado para armazenar os arquivos enviados pela FastAPI.  
+- O bucket principal é definido em `.env` via `S3_BUCKET_NAME`.  
+- O MLflow salva artefatos dentro de um **subdiretório interno**, por exemplo:
+
+```
+s3://diabetes-ml2025/mlflow/
+```
 
 ---
 
-# Configuração do Ambiente 
-Criar um arquivo .env na raiz.
+# 4. Ambiente Docker
+
+Todos os serviços sobem via `docker-compose`:
+
+| Serviço | Descrição |
+|---------|-----------|
+| FastAPI | Ingestão + Upload para S3 |
+| PostgreSQL | Banco para MLflow |
+| JupyterLab | Execução dos notebooks |
+| MLflow | Tracking de modelos e experimentos |
+| Trendz | Visualização/monitoramento |
+| S3 Amazon | Armazenamento de arquivos |
+
+---
+
+# 5. Configuração – Criar o arquivo `.env`
 
 ```
-#AWS
+# AWS
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_DEFAULT_REGION=
-S3_BUCKET_NAME=
+S3_BUCKET_NAME=diabetes-ml2025
 
-#Snowflake
+# Snowflake
 SNOWFLAKE_USER=
 SNOWFLAKE_PASSWORD=
 SNOWFLAKE_ACCOUNT=
@@ -84,41 +104,42 @@ SNOWFLAKE_TABLE=
 
 ---
 
-# Como executar o projeto
+# 6. Como executar o projeto
 
-### Passo 1 — Subir toda a stack
+### 1 — Subir toda a stack
 ```bash
 docker compose up -d
 ```
 
-### Passo 2 — Verificar serviços
+### 2 — Acessar serviços
 
-| Serviço      | URL                        | Credenciais |
-|--------------|----------------------------|-------------|
-| FastAPI      | http://localhost:8000       | — |
-| Swagger UI   | http://localhost:8000/docs  | — |
-| S3 Amazon    | http://localhost:9001       | - |
-| JupyterLab   | http://localhost:8888       | - |
-| MLflow       | http://localhost:5500       | — |
-| PostgreSQL   | localhost:5432              | admin / admin |
+| Serviço    | URL                                                      |
+| ---------- | -------------------------------------------------------- |
+| FastAPI    | http://localhost:8000           |
+| Swagger    | http://localhost:8000/docs |
+| JupyterLab | http://localhost:8888           |
+| MLflow     | http://localhost:5500           |
+| PostgreSQL | localhost:5432                                           |
 
 ---
 
-# 4. Como testar a ingestão (FastAPI)
+# 7. Testar Ingestão via FastAPI
 
 ### Via CURL
+
 ```bash
-curl -X POST "http://localhost:8000/api/upload"  \  -F "file=\data\raw\Dataset_of_Diabetes.csv" 
+curl -X POST "http://localhost:8000/api/upload"      -F "file=@Dataset_of_Diabetes.csv"
 ```
 
-### Via Navegador (Swagger)
-1. Abrir: http://localhost:8000/docs  
-2. Abrir o endpoint POST `/api/upload`  
-3. Clicar em “Try it out”  
-4. Selecionar o arquivo `.csv` ou `.json`  
-5. Executar  
+### Via Swagger
 
-### Resultado esperado
+1. Abrir `http://localhost:8000/docs`
+2. POST `/api/upload`
+3. Selecionar arquivo
+4. Enviar
+
+### Resposta esperada
+
 ```json
 {
   "message": "File uploaded successfully",
@@ -126,15 +147,68 @@ curl -X POST "http://localhost:8000/api/upload"  \  -F "file=\data\raw\Dataset_o
 }
 ```
 
-O arquivo aparecerá no S3 em:
-```
-http://localhost:9001/browser/diabetes-raw
-```
---- 
+O arquivo estará em:
 
-Grupo:
-- Eduardo Lins
-- Gabriel Belliato
-- Gabriel Bezerra
-- Letícia Gomes da Silva
-- Vinicius Petribu 
+```
+s3://diabetes-raw/
+```
+
+---
+
+# 8. Logging de Modelos no MLflow
+
+O projeto registra automaticamente:
+
+* parâmetros
+* métricas
+* assinatura do modelo
+* input_example
+* versão final do modelo
+
+Configuração:
+
+```python
+mlflow.set_tracking_uri("http://mlflow:5000")
+mlflow.set_experiment("predicting-diabetes")
+```
+
+---
+
+# 9. Como resetar o MLflow e o PostgreSQL
+
+Caso o MLflow falhe por causa de runs antigos, corrupção de volume ou banco ausente:
+
+### 1 — Apagar dados do Postgres
+```bash
+rm -rf ./postgres/data
+```
+
+### 2 — Derrubar containers
+```bash
+docker compose down -v
+```
+
+### 3 — Subir tudo de novo
+```bash
+docker compose up -d --build
+```
+
+### 4 — Criar o banco do MLflow
+```bash
+docker exec -it postgres psql -U admin -d postgres -c "CREATE DATABASE mlflowdb;"
+```
+
+### 5 — Reiniciar somente o MLflow
+```bash
+docker restart mlflow
+```
+
+---
+
+# 10. Grupo
+
+* Eduardo Lins  
+* Gabriel Belliato  
+* Gabriel Bezerra  
+* Letícia Gomes da Silva  
+* Vinicius Petribu
