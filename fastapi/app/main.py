@@ -17,19 +17,20 @@ TB_URL = f"http://thingsboard:9090/api/v1/{TB_TOKEN}/telemetry"
 
 def send_row_to_thingsboard(row):
     payload = {
-        "gender": str(row["Gender"]).strip().upper(),
-        "age": float(row["AGE"]),
-        "urea": float(row["Urea"]),
-        "cr": float(row["Cr"]),
-        "hba1c": float(row["HbA1c"]),
-        "chol": float(row["Chol"]),
-        "tg": float(row["TG"]),
-        "hdl": float(row["HDL"]),
-        "ldl": float(row["LDL"]),
-        "vldl": float(row["VLDL"]),
-        "bmi": float(row["BMI"]),
-        "class": str(row["CLASS"]).strip().upper()
+        "Gender": str(row["Gender"]).strip().upper(),
+        "AGE": float(row["AGE"]),
+        "Urea": float(row["Urea"]),
+        "Cr": float(row["Cr"]),
+        "HbA1c": float(row["HbA1c"]),
+        "Chol": float(row["Chol"]),
+        "TG": float(row["TG"]),
+        "HDL": float(row["HDL"]),
+        "LDL": float(row["LDL"]),
+        "VLDL": float(row["VLDL"]),
+        "BMI": float(row["BMI"]),
+        "CLASS": str(row["CLASS"]).strip().upper()
     }
+
 
     requests.post(TB_URL, json=payload)
 

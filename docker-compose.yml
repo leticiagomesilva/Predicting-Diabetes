@@ -47,6 +47,7 @@ services:
       --default-artifact-root s3://diabetes-ml2025/mlflow
       --host 0.0.0.0
       --port 5000
+      --allowed-hosts "*"
     networks:
       - diabetes_net
 

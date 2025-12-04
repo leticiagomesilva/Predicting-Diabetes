@@ -166,7 +166,32 @@ s3://diabetes-raw/
 4. Nome: `diabetes-device`  
 5. **Next: Credenciais**
 6. Copiar Token de acesso (ex: `rR9MfH2gFxP2nNhjC9Jp`) 
-7. Colar Token no .env (`TB_TOKEN=`)
+
+Antes de enviar as métricas ou contagens pelo JupyterLab, é necessário informar o token do dispositivo criado no ThingsBoard.
+- Colar Token no .env (`TB_TOKEN=`) e no notebook na sessão:
+```
+import requests
+
+DEVICE_TOKEN = "SEU_TOKEN_AQUI"   # copie do ThingsBoard
+TB_URL = f"http://thingsboard:9090/api/v1/{DEVICE_TOKEN}/telemetry"
+```
+- Rodar comando 
+```
+docker compose down
+docker compose up -d
+```
+## 8.2 Importar o Dashboard do ThingsBoard
+
+Após criar o device, é necessário importar o dashboard utilizado no projeto. O dashboard fornecido pelo grupo contém o deviceId fixo do device original.
+É necessário substituir para usar com o seu device.
+
+Passo a passo:
+1. No arquivo `dashboard_de_diabetes.json` substitua o ID do seu dispositivo em todos os campos `"deviceId": "seu-device-Id-aqui"`
+2. Acesse o ThingsBoard:
+http://localhost:9090
+3. Menu lateral → Dashboards → Adicionar dashboard (+)
+4. Selecione o arquivo `dashboard_de_diabetes.json`
+
 
 ---
 
@@ -187,14 +212,18 @@ Ele envia **todas as linhas** do `Dataset_of_Diabetes.csv` para o ThingsBoard.
 
 ```json
 {
-  "Pregnancies": 6,
-  "Glucose": 148,
-  "BloodPressure": 72,
-  "SkinThickness": 35,
-  "Insulin": 0,
-  "BMI": 33.6,
-  "Age": 50,
-  "Outcome": 1
+  "Gender": "M",
+  "AGE": 57,
+  "Urea": 5.3,
+  "Cr": 66,
+  "HbA1c": 7.9,
+  "Chol": 3.7,
+  "TG": 2.9,
+  "HDL": 1.1,
+  "LDL": 3.0,
+  "VLDL": 0.9,
+  "BMI": 28.5,
+  "CLASS": "Y"
 }
 ```
 
@@ -234,15 +263,13 @@ mlflow.set_experiment("predicting-diabetes")
 # 11. Como resetar o MLflow e o PostgreSQL
 
 Caso o MLflow falhe por causa de runs antigos, corrupção de volume ou banco ausente:
-
-### 1 — Apagar dados do Postgres
-```bash
-rm -rf ./postgres/data
-```
-
-### 2 — Derrubar containers
+### 1 — Derrubar containers e apagar volumes
 ```bash
 docker compose down -v
+```
+### 2 — Apagar dados do Postgres
+```bash
+rm -rf ./postgres/data
 ```
 
 ### 3 — Subir tudo de novo
@@ -258,6 +285,22 @@ docker exec -it postgres psql -U admin -d postgres -c "CREATE DATABASE mlflowdb;
 ### 5 — Reiniciar somente o MLflow
 ```bash
 docker restart mlflow
+```
+### 6 — Recriar o dispositivo no ThingsBoard
+1. Acesse http://localhost:9090
+2. Entidades → Dispositivos
+3. Criar novo device
+4. Copiar TOKEN NOVO
+5. Atualizar:
+- .env → TB_TOKEN=
+- notebook:
+```
+DEVICE_TOKEN = "NOVO_TOKEN"
+TB_URL = f"http://thingsboard:9090/api/v1/{DEVICE_TOKEN}/telemetry"
+```
+6. Subir novamente a stack para carregar o novo token::
+```
+docker compose up -d
 ```
 
 ---
