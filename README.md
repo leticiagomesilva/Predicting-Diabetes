@@ -35,9 +35,7 @@ Predicting-Diabetes/
 ├── jupyter-lab/
 │   ├── Dockerfile
 │   └── ...
-├── notebooks/
-├── trendz/
-└── reports/
+
 ```
 
 ---
