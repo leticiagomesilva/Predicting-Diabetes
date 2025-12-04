@@ -123,10 +123,6 @@ docker compose up -d --build
 | MLflow     | http://localhost:5500           |
 | ThingsBoard | http://localhost:9090 |
 
-```
-user: tenant@thingsboard.org
-pass: tenant
-```
 
 ---
 
@@ -164,12 +160,17 @@ s3://diabetes-raw/
 
 ## 8.1 Criar o Device
 
-1. Acesse: http://localhost:9090  
-2. Menu lateral → **Entidades**  → **Dispositivos** 
-3. **Adicionar novo dispositivo (+)**  
-4. Nome: `diabetes-device`  
-5. **Next: Credenciais**
-6. Copiar Token de acesso (ex: `rR9MfH2gFxP2nNhjC9Jp`) 
+1. Acesse: http://localhost:9090
+2. Utilize as credenciais:
+```
+user: tenant@thingsboard.org
+pass: tenant
+```
+3. Menu lateral → **Entidades**  → **Dispositivos** 
+4. **Adicionar novo dispositivo (+)**  
+5. Nome: `diabetes-device`  
+6. **Next: Credenciais**
+7. Copiar Token de acesso (ex: `rR9MfH2gFxP2nNhjC9Jp`) 
 
 Antes de enviar as métricas ou contagens pelo JupyterLab, é necessário informar o token do dispositivo criado no ThingsBoard.
 - Colar Token no .env (`TB_TOKEN=`) e no notebook na sessão:
