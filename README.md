@@ -5,6 +5,12 @@ Reprodução e avaliação do artigo
 
 Projeto da disciplina **Aprendizado de Máquina – CESAR School (2025.2)**.
 
+* Eduardo Lins (@eduardoalins)
+* Gabriel Belliato (@belli5)
+* Gabriel Bezerra (@GabrielBza)
+* Letícia Gomes da Silva (@leticiagomesilva)
+* Vinicius Petribu (@vinipetribu)
+
 ---
 
 # 1. Estrutura Geral do Projeto
@@ -302,13 +308,3 @@ TB_URL = f"http://thingsboard:9090/api/v1/{DEVICE_TOKEN}/telemetry"
 ```
 docker compose up -d
 ```
-
----
-
-# 12. Grupo
-
-* Eduardo Lins  
-* Gabriel Belliato  
-* Gabriel Bezerra  
-* Letícia Gomes da Silva  
-* Vinicius Petribu
